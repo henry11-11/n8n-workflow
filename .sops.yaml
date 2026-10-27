@@ -1,0 +1,5 @@
+creation_rules:
+  - path_regex: .*\.enc\.ya?ml$
+    age: age1hxrzrmerqvdq7vgf80q28k545gwcwm9m4md8gckqm8jalpujqpks8ykql0
+  - path_regex: .*\.sops\.ya?ml$
+    age: age1hxrzrmerqvdq7vgf80q28k545gwcwm9m4md8gckqm8jalpujqpks8ykql0
