@@ -29,14 +29,13 @@ spec:
             - containerPort: 5678
               name: http
           env:
-            # Mode & Execution
             - name: EXECUTIONS_MODE
               value: "queue"
             - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
               value: "true"
             - name: N8N_LOG_LEVEL
               value: "info"
-            # Database Configuration (CloudNativePG read-write service endpoint)
+            # Database
             - name: DB_TYPE
               value: "postgresdb"
             - name: DB_POSTGRESDB_HOST
@@ -55,7 +54,7 @@ spec:
                 secretKeyRef:
                   name: n8n-db-creds
                   key: password
-            # Redis Configuration (Bull queue broker)
+            # Redis
             - name: QUEUE_BULL_REDIS_HOST
               value: "n8n-redis"
             - name: QUEUE_BULL_REDIS_PORT
@@ -84,14 +83,18 @@ spec:
             httpGet:
               path: /healthz
               port: 5678
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
           livenessProbe:
             httpGet:
               path: /healthz
               port: 5678
-            initialDelaySeconds: 30
+            initialDelaySeconds: 45
             periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
           resources:
             {{- toYaml .Values.main.resources | nindent 12 }}
           volumeMounts:
