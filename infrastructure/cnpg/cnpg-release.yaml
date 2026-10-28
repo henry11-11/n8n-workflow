@@ -6,8 +6,14 @@ metadata:
 spec:
   interval: 1h
   targetNamespace: cnpg-system
+  timeout: 10m
   install:
     createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: cloudnative-pg

@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: minio
-          image: quay.io/minio/minio:RELEASE.2024-10-13T13-33-44Z
+          image: rancher/mirrored-minio-minio:RELEASE.2022-12-12T19-27-27Z
           args:
             - server
             - /data
