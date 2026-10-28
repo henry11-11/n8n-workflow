@@ -5,6 +5,9 @@ metadata:
   namespace: keda
 spec:
   interval: 1h
+  targetNamespace: keda
+  install:
+    createNamespace: true
   chart:
     spec:
       chart: keda
@@ -13,8 +16,6 @@ spec:
         kind: HelmRepository
         name: kedacore
         namespace: flux-system
-  targetNamespace: keda
-  createNamespace: true
   values:
     operator:
       resources:

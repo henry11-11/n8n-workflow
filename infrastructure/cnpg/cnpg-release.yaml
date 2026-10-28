@@ -5,6 +5,9 @@ metadata:
   namespace: cnpg-system
 spec:
   interval: 1h
+  targetNamespace: cnpg-system
+  install:
+    createNamespace: true
   chart:
     spec:
       chart: cloudnative-pg
@@ -12,8 +15,6 @@ spec:
         kind: HelmRepository
         name: cnpg
         namespace: flux-system
-  targetNamespace: cnpg-system
-  createNamespace: true
   values:
     resources:
       requests:
