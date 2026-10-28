@@ -5,9 +5,15 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
+  timeout: 10m
   targetNamespace: n8n
   install:
     createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: ./charts/n8n

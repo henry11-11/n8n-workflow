@@ -15,6 +15,11 @@ spec:
         name: n8n-db-creds
   resources:
     {{- toYaml .Values.postgres.resources | nindent 4 }}
+  probes:
+    liveness:
+      timeoutSeconds: 5
+    readiness:
+      timeoutSeconds: 5
   backup:
     barmanObjectStore:
       destinationPath: s3://cnpg-backups/
