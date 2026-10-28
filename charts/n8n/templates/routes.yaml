@@ -1,0 +1,31 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: n8n-editor-route
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`editor.n8n.test`)
+      kind: Rule
+      services:
+        - name: n8n-main
+          port: 5678
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: n8n-webhook-route
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`hooks.n8n.test`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`))
+      kind: Rule
+      services:
+        - name: n8n-webhook
+          port: 5678

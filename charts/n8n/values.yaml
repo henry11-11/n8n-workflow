@@ -1,6 +1,6 @@
 image:
   repository: docker.io/library/n8n-custom
-  tag: 1.82.3-v1
+  tag: 1.82.3-v2
   pullPolicy: IfNotPresent
 
 main:
@@ -12,6 +12,26 @@ main:
     limits:
       cpu: 500m
       memory: 768Mi
+
+webhook:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 192Mi
+    limits:
+      cpu: 300m
+      memory: 384Mi
+
+worker:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
 redis:
   image: redis:7.2-alpine

@@ -1,0 +1,45 @@
+{
+  "name": "Sample Slow Queue Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "slow-task",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "id": "55555555-5555-5555-5555-555555555555",
+      "name": "Slow Webhook"
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [450, 300],
+      "id": "66666666-6666-6666-6666-666666666666",
+      "name": "Simulate Delay",
+      "webhookId": "slow-wait-step"
+    }
+  ],
+  "connections": {
+    "Slow Webhook": {
+      "main": [
+        [
+          {
+            "node": "Simulate Delay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

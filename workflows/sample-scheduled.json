@@ -1,0 +1,48 @@
+{
+  "name": "Sample Scheduled Heartbeat",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300],
+      "id": "33333333-3333-3333-3333-333333333333",
+      "name": "Every 5 Minutes"
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('Heartbeat fired successfully at ' + new Date().toISOString());\nreturn [{ json: { heartbeat: true, timestamp: new Date().toISOString() } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300],
+      "id": "44444444-4444-4444-4444-444444444444",
+      "name": "Log Heartbeat"
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Log Heartbeat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
