@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n-redis
+  labels:
+    app: n8n-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n-redis
+  template:
+    metadata:
+      labels:
+        app: n8n-redis
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image }}
+          command:
+            - /bin/sh
+            - -c
+            - "redis-server --requirepass \"$REDIS_PASSWORD\" --save \"\" --appendonly no"
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-redis-creds
+                  key: password
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n-redis
+  labels:
+    app: n8n-redis
+spec:
+  selector:
+    app: n8n-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: redis
