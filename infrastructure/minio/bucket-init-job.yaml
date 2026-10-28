@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-create-bucket
+  namespace: minio
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: minio-mc
+          image: quay.io/minio/mc:RELEASE.2024-10-14T15-34-01Z
+          command:
+            - /bin/sh
+            - -c
+            - |
+              until mc alias set local http://minio.minio.svc.cluster.local:9000 minioadmin minioadminpassword; do
+                echo "Waiting for MinIO to start..."
+                sleep 2
+              done
+              mc mb --ignore-existing local/cnpg-backups
+              echo "Bucket cnpg-backups is ready."
