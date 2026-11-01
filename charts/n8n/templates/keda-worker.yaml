@@ -1,0 +1,36 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-redis-auth
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  secretTargetRef:
+    - parameter: password
+      name: n8n-redis-creds
+      key: password
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: n8n-worker-scaler
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: n8n-worker
+  minReplicaCount: 1
+  maxReplicaCount: 3
+  cooldownPeriod: 60
+  pollingInterval: 5
+  triggers:
+    - type: redis
+      metadata:
+        address: n8n-redis.n8n.svc.cluster.local:6379
+        listName: bull:jobs:wait
+        listLength: "5"
+      authenticationRef:
+        name: keda-redis-auth

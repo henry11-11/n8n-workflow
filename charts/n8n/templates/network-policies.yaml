@@ -59,7 +59,6 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    # Allow database connections from all n8n queue components
     - from:
         - podSelector:
             matchExpressions:
@@ -72,7 +71,6 @@ spec:
       ports:
         - protocol: TCP
           port: 5432
-    # Allow health probes and operator control on port 8000
     - ports:
         - protocol: TCP
           port: 8000
@@ -90,12 +88,21 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Allow n8n components to talk to Redis
     - from:
         - podSelector:
             matchExpressions:
               - key: app.kubernetes.io/component
                 operator: In
                 values: ["main", "webhook", "worker"]
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Allow KEDA operator to monitor Redis queue depth
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: keda
       ports:
         - protocol: TCP
           port: 6379
@@ -153,7 +160,6 @@ spec:
       ports:
         - protocol: TCP
           port: 9000
-    # Allow outbound internet for external APIs
     - to:
         - ipBlock:
             cidr: 0.0.0.0/0
