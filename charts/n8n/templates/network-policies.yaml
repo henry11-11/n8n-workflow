@@ -32,6 +32,23 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: allow-k8s-api-egress
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 6443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: allow-postgres-ingress
   labels:
     app.kubernetes.io/name: n8n
@@ -42,18 +59,21 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Allow database connections from all n8n queue components
     - from:
         - podSelector:
             matchExpressions:
               - key: app.kubernetes.io/component
                 operator: In
-                values: ["main", "worker", "import-job"]
+                values: ["main", "worker", "webhook", "import-job"]
         - podSelector:
             matchLabels:
               cnpg.io/cluster: n8n-postgres
       ports:
         - protocol: TCP
           port: 5432
+    # Allow health probes and operator control on port 8000
+    - ports:
         - protocol: TCP
           port: 8000
 ---
@@ -83,7 +103,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-traefik-to-n8n
+  name: allow-n8n-http-ingress
   labels:
     app.kubernetes.io/name: n8n
 spec:
@@ -95,14 +115,7 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-          podSelector:
-            matchLabels:
-              app.kubernetes.io/name: traefik
-      ports:
+    - ports:
         - protocol: TCP
           port: 5678
 ---
@@ -144,6 +157,5 @@ spec:
         - ipBlock:
             cidr: 0.0.0.0/0
             except:
-              - 10.0.0.0/8
               - 172.16.0.0/12
               - 192.168.0.0/16
