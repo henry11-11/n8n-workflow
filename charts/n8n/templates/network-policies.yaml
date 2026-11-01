@@ -153,9 +153,7 @@ spec:
       ports:
         - protocol: TCP
           port: 9000
+    # Allow outbound internet for external APIs
     - to:
         - ipBlock:
             cidr: 0.0.0.0/0
-            except:
-              - 172.16.0.0/12
-              - 192.168.0.0/16
