@@ -1,4 +1,62 @@
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: editor-basicauth
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  basicAuth:
+    secret: editor-basicauth-creds
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: editor-ipallowlist
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  ipAllowList:
+    sourceRange:
+      - 127.0.0.1/32
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: webhook-ratelimit
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  rateLimit:
+    average: 100
+    burst: 50
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: webhook-buffering
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  buffering:
+    maxRequestBodyBytes: 2097152 # 2 MB limit
+    memRequestBodyBytes: 524288  # 512 KB memory buffer limit
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: security-headers
+  labels:
+    app.kubernetes.io/name: n8n
+spec:
+  headers:
+    browserXssFilter: true
+    contentTypeNosniff: true
+    frameDeny: true
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: n8n-editor-route
@@ -10,6 +68,10 @@ spec:
   routes:
     - match: Host(`editor.n8n.test`)
       kind: Rule
+      middlewares:
+        - name: editor-ipallowlist
+        - name: editor-basicauth
+        - name: security-headers
       services:
         - name: n8n-main
           port: 5678
@@ -24,8 +86,12 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`hooks.n8n.test`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`))
+    - match: Host(`hooks.n8n.test`) && PathPrefix(`/webhook/`)
       kind: Rule
+      middlewares:
+        - name: webhook-ratelimit
+        - name: webhook-buffering
+        - name: security-headers
       services:
         - name: n8n-webhook
           port: 5678

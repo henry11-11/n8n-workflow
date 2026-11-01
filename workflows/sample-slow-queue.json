@@ -9,7 +9,10 @@
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [250, 300],
+      "position": [
+        250,
+        300
+      ],
       "id": "55555555-5555-5555-5555-555555555555",
       "name": "Slow Webhook"
     },
@@ -20,7 +23,10 @@
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
-      "position": [450, 300],
+      "position": [
+        450,
+        300
+      ],
       "id": "66666666-6666-6666-6666-666666666666",
       "name": "Simulate Delay",
       "webhookId": "slow-wait-step"
@@ -41,5 +47,6 @@
   },
   "settings": {
     "executionOrder": "v1"
-  }
+  },
+  "active": true
 }

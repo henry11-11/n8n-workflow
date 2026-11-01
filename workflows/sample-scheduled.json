@@ -14,7 +14,10 @@
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [250, 300],
+      "position": [
+        250,
+        300
+      ],
       "id": "33333333-3333-3333-3333-333333333333",
       "name": "Every 5 Minutes"
     },
@@ -24,7 +27,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300],
+      "position": [
+        450,
+        300
+      ],
       "id": "44444444-4444-4444-4444-444444444444",
       "name": "Log Heartbeat"
     }
@@ -44,5 +50,6 @@
   },
   "settings": {
     "executionOrder": "v1"
-  }
+  },
+  "active": true
 }
